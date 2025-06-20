@@ -50,7 +50,7 @@ ax.set_xlim(0, max_size_x)
 ax.set_ylim(0, max_size_y)
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
-ax.set_title("Stage 2: Object detection")
+# ax.set_title("Stage 2: Object detection")
 
 for j in range(num_img_y):
     for i in range(num_img_x):

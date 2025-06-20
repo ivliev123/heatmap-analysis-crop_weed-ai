@@ -48,7 +48,7 @@ ax.set_xlim(0, canvas_width)
 ax.set_ylim(0, canvas_height)
 ax.set_xlabel("X")
 ax.set_ylabel("Y")
-ax.set_title("Stage 3: Center points of objects")
+# ax.set_title("Stage 3: Center points of objects")
 
 for j in range(num_y):
     for i in range(num_x):
@@ -110,4 +110,4 @@ for j in range(num_rows):
 
 plt.tight_layout()
 plt.savefig(f"{save_path}3_etap.png", dpi=300)
-plt.show()
+# plt.show()

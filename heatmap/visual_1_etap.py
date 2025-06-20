@@ -31,7 +31,7 @@ ax.set_xlim(0, max_size_x)
 ax.set_ylim(0, max_size_y)
 ax.set_xlabel("X")
 ax.set_ylabel("Y")
-ax.set_title("Stage 1: Data collection")
+# ax.set_title("Stage 1: Data collection")
 
 # Place images
 for j in range(num_img_y):
