@@ -1,0 +1,79 @@
+{
+    "SSD MobileNet V1 FPN 640x640": {
+        "FPS": 14.0512,
+        "MEMORY": 1563.6445,
+        "GFLOPS": 102.4275,
+        "PARAMS": 10908327.0,
+        "TIME": 0.0712
+    },
+    "SSD MobileNet V2 FPNLite 640x640": {
+        "FPS": 26.3201,
+        "MEMORY": 2182.4375,
+        "GFLOPS": 6.7274,
+        "PARAMS": 2599079.0,
+        "TIME": 0.038
+    },
+    "SSD ResNet50 V1 FPN 640x640": {
+        "FPS": 9.4708,
+        "MEMORY": 2236.0039,
+        "GFLOPS": 157.5953,
+        "PARAMS": 31699378.0,
+        "TIME": 0.1056
+    },
+    "SSD ResNet101 V1 FPN 640x640": {
+        "FPS": 6.9985,
+        "MEMORY": 3443.875,
+        "GFLOPS": 218.203,
+        "PARAMS": 50743730.0,
+        "TIME": 0.1429
+    },
+    "SSD ResNet152 V1 FPN 640x640": {
+        "FPS": 5.4022,
+        "MEMORY": 4817.6016,
+        "GFLOPS": 278.8106,
+        "PARAMS": 66433458.0,
+        "TIME": 0.1851
+    },
+    "Faster R-CNN ResNet50 V1 640x640": {
+        "FPS": 5.1605,
+        "MEMORY": 4865.7539,
+        "GFLOPS": 210.3611,
+        "PARAMS": 28512226.0,
+        "TIME": 0.1938
+    },
+    "Faster R-CNN ResNet101 V1 640x640": {
+        "FPS": 4.8156,
+        "MEMORY": 4809.0703,
+        "GFLOPS": 270.8605,
+        "PARAMS": 47376090.0,
+        "TIME": 0.2077
+    },
+    "Faster R-CNN ResNet152 V1 640x640": {
+        "FPS": 4.1477,
+        "MEMORY": 4845.8555,
+        "GFLOPS": 331.4682,
+        "PARAMS": 63065818.0,
+        "TIME": 0.2411
+    },
+    "Faster R-CNN Inception ResNet V2 640x640": {
+        "FPS": 0.902,
+        "MEMORY": 5476.793,
+        "GFLOPS": 1655.8352,
+        "PARAMS": 59398642.0,
+        "TIME": 1.1087
+    },
+    "EfficientDet D0 512x512": {
+        "FPS": 25.1259,
+        "MEMORY": 5791.9141,
+        "GFLOPS": 4.5081,
+        "PARAMS": 3876109.0,
+        "TIME": 0.0398
+    },
+    "EfficientDet D1 640x640": {
+        "FPS": 14.7626,
+        "MEMORY": 5835.5039,
+        "GFLOPS": 9.9952,
+        "PARAMS": 5055404.0,
+        "TIME": 0.0677
+    }
+}

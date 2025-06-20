@@ -1,0 +1,13 @@
+Model_Name_Dict = {
+    "reserch__1": "SSD MobileNet V1 FPN 640x640",
+    "reserch__2": "SSD MobileNet V2 FPNLite 640x640",
+    "reserch__3": "SSD ResNet50 V1 FPN 640x640",
+    "reserch__4": "SSD ResNet101 V1 FPN 640x640",
+    "reserch__5": "SSD ResNet152 V1 FPN 640x640",
+    "reserch__6": "Faster R-CNN ResNet50 V1 640x640",
+    "reserch__7": "Faster R-CNN ResNet101 V1 640x640",
+    "reserch__8": "Faster R-CNN ResNet152 V1 640x640",
+    "reserch__9": "Faster R-CNN Inception ResNet V2 640x640",
+    "reserch__10": "EfficientDet D0 512x512",
+    "reserch__11": "EfficientDet D1 640x640"
+}
