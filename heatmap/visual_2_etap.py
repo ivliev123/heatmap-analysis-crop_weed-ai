@@ -1,73 +1,90 @@
 # Libraries
 from PIL import Image
-import requests
-from io import BytesIO
 import numpy as np
 import matplotlib.pyplot as plt
+import xml.etree.ElementTree as ET
 
-# Open an image from a computer 
+# Open an image from a local path
 def open_image_local(path_to_image):
-    image = Image.open(path_to_image).convert("RGB") # Open the image
-    image_array = np.array(image) # Convert to a numpy array
-    return image_array # Output
+    image = Image.open(path_to_image).convert("RGB")
+    image_array = np.array(image)
+    return image_array
 
+# Load XML annotations
+def load_xml_data(xml_path):
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
 
-# Путь к папке с изображениями
-path = "reserch__9/training_demo/test_output/"
+    true_boxes = []
+    true_classes = []
 
-# Список изображений и их координат в 3D
-data = [
-    {"path": "image_14.jpg", "coord": [0, 0, 0]},
-    {"path": "image_392.jpg", "coord": [1, 0, 0]},
-    {"path": "image_847.jpg", "coord": [2, 0, 0]},
+    for obj in root.findall("object"):
+        class_name = obj.find("name").text
+        bndbox = obj.find("bndbox")
+        xmin = int(bndbox.find("xmin").text)
+        ymin = int(bndbox.find("ymin").text)
+        xmax = int(bndbox.find("xmax").text)
+        ymax = int(bndbox.find("ymax").text)
+        
+        true_boxes.append((xmin, ymin, xmax, ymax))
+        true_classes.append(class_name)
 
-    {"path": "image_1052.jpg", "coord": [0, 1, 0]},
-    {"path": "image_2957.jpg", "coord": [1, 1, 0]},
-    {"path": "image_4147.jpg", "coord": [2, 1, 0]},
+    return true_boxes, true_classes
 
-    {"path": "image_4195.jpg", "coord": [0, 2, 0]},
-    {"path": "image_4219.jpg", "coord": [1, 2, 0]},
-    {"path": "image_4170.jpg", "coord": [2, 2, 0]},
-    # Добавь остальные изображения по аналогии
-]
+# Paths
+path = "../../crop_weed_research_data/images/test/"
+path_to_save_figure = "2_FIGURE/"
+data = [14, 392, 847, 1052, 2957, 4147, 4195, 4219, 4170]
 
-# Create scatter plot
-fig, ax = plt.subplots(figsize=(8, 6))
-
-
-num_img_x = 3
-num_img_y = 3
-separetion_size = 0.02
+# Plot settings
+fig, ax = plt.subplots(figsize=(12, 8))
+num_img_x, num_img_y = 3, 3
+separetion_size = 0.0
+img_size = [1137.0, 640.0]  # width, height
 img_scale_x = 1 
-img_scale_y = 640.0/1137.0 
-max_size_x = num_img_x * img_scale_x + (num_img_x + 1) *  separetion_size
-max_size_y = num_img_y * img_scale_y + (num_img_y + 1) *  separetion_size
+img_scale_y = 640.0 / 1137.0
+max_size_x = num_img_x * img_scale_x + (num_img_x + 1) * separetion_size
+max_size_y = num_img_y * img_scale_y + (num_img_y + 1) * separetion_size
 
-print(max_size_x)
-
-# основная диаграмма
 ax.set_xlim(0, max_size_x)
 ax.set_ylim(0, max_size_y)
-
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
-ax.set_title("Этап 2. Детектирование объектов")
+ax.set_title("Stage 2: Object detection")
 
-for j in range(3):
-    for i in range(3):
-        # Open the image from my computer
-        image = open_image_local(path + data[j * num_img_x + i]["path"])
+for j in range(num_img_y):
+    for i in range(num_img_x):
+        index = j * num_img_x + i
+        image_path = f"{path}image_{data[index]}.jpg"
+        xml_path = f"{path}image_{data[index]}.xml"
 
-        # Define the position and size parameters
+        image = open_image_local(image_path)
+        true_boxes, true_classes = load_xml_data(xml_path)
+
+        # Position and scale for subplot placement
         x0 = separetion_size + (img_scale_x + separetion_size) * i
-        x1 = separetion_size + img_scale_x + (img_scale_x + separetion_size) * i
+        x1 = x0 + img_scale_x
         y0 = separetion_size + (img_scale_y + separetion_size) * j
-        y1 = separetion_size + + img_scale_y + (img_scale_y + separetion_size) * j
+        y1 = y0 + img_scale_y
 
-
-        # Define the position for the image axes
         ax.imshow(image, extent=[x0, x1, y0, y1], aspect='auto')
 
-# Display the plot
-plt.savefig("2_etap.png", dpi=300)
-plt.show()
+        # Draw bounding boxes
+        for box, cls in zip(true_boxes, true_classes):
+            xmin, ymin, xmax, ymax = box
+            # Normalize coordinates to subplot space
+            box_x0 = x0 + xmin / img_size[0] * img_scale_x
+            box_x1 = x0 + xmax / img_size[0] * img_scale_x
+            box_y0 = y0 + (img_size[1] - ymax) / img_size[1] * img_scale_y
+            box_y1 = y0 + (img_size[1] - ymin) / img_size[1] * img_scale_y
+
+            color = "#00FF00" if cls == "crop" else "#FF0000"
+            rect = plt.Rectangle((box_x0, box_y0), box_x1 - box_x0, box_y1 - box_y0,
+                                 linewidth=1.5, edgecolor=color, facecolor='none')
+            ax.add_patch(rect)
+            ax.text(box_x0, box_y0, cls, color=color, fontsize=6, verticalalignment='top')
+
+# Finalize plot
+plt.tight_layout()
+plt.savefig(f"{path_to_save_figure}2_etap.png", dpi=300)
+# plt.show()

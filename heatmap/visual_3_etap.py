@@ -1,134 +1,79 @@
-# Libraries
 from PIL import Image
-import requests
-from io import BytesIO
 import numpy as np
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 
-# Open an image from a computer 
-def open_image_local(path_to_image):
-    image = Image.open(path_to_image).convert("RGB") # Open the image
-    image_array = np.array(image) # Convert to a numpy array
-    return image_array # Output
+def open_image(path):
+    """Load image and convert to RGB numpy array."""
+    image = Image.open(path).convert("RGB")
+    return np.array(image)
 
-
-
-
-def load_xml_data(xml_path):
+def load_annotations(xml_path):
+    """Load bounding boxes and class labels from Pascal VOC XML."""
     tree = ET.parse(xml_path)
     root = tree.getroot()
-
-    true_boxes = []
-    true_classes = []
-
+    
+    boxes, labels = [], []
     for obj in root.findall("object"):
-        class_name = obj.find("name").text  # Извлекаем название класса объекта
+        label = obj.find("name").text
         bndbox = obj.find("bndbox")
         xmin = int(bndbox.find("xmin").text)
         ymin = int(bndbox.find("ymin").text)
         xmax = int(bndbox.find("xmax").text)
         ymax = int(bndbox.find("ymax").text)
-        
-        true_boxes.append((xmin, ymin, xmax, ymax))
-        true_classes.append(class_name)  # Добавляем класс в список
+        boxes.append((xmin, ymin, xmax, ymax))
+        labels.append(label)
+    return boxes, labels
 
-    return true_boxes, true_classes
-    
+# Settings
+image_dir = "../../crop_weed_research_data/images/test/"
+save_path = "2_FIGURE/"
+image_ids = [14, 392, 847, 1052, 2957, 4147, 4195, 4219, 4170]
 
+# Grid layout
+num_x, num_y = 3, 3
+img_width, img_height = 1137.0, 640.0
+scale_x = 1.0
+scale_y = img_height / img_width
+gap = 0.0
 
+canvas_width = num_x * scale_x + (num_x + 1) * gap
+canvas_height = num_y * scale_y + (num_y + 1) * gap
 
-# Путь к папке с изображениями
-# path = "reserch__9/training_demo/test_output/"
+# Plot setup
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.set_xlim(0, canvas_width)
+ax.set_ylim(0, canvas_height)
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
+ax.set_title("Stage 3: Center points of objects")
 
-# путь к папке с изображениями и файлам разметки
-path = "main_research_data/training_demo/images/test/"
-# Список изображений и их координат в 3D
-data = [
-    14,  
-    392, 
-    847, 
+for j in range(num_y):
+    for i in range(num_x):
+        idx = j * num_x + i
+        img_id = image_ids[idx]
+        img_path = f"{image_dir}image_{img_id}.jpg"
+        xml_path = f"{image_dir}image_{img_id}.xml"
 
-    1052,
-    2957,
-    4147,
+        image = open_image(img_path)
+        boxes, labels = load_annotations(xml_path)
 
-    4195,
-    4219,
-    4170,
-    # Добавь остальные изображения по аналогии
-]
+        # Position on canvas
+        x0 = gap + (scale_x + gap) * i
+        y0 = gap + (scale_y + gap) * j
+        x1 = x0 + scale_x
+        y1 = y0 + scale_y
 
-# Create scatter plot
-fig, ax = plt.subplots(figsize=(8, 6))
-
-
-num_img_x = 3
-num_img_y = 3
-separetion_size = 0.02
-img_size = [1137.0, 640.0] 
-img_scale_x = 1 
-img_scale_y = 640.0/1137.0 
-max_size_x = num_img_x * img_scale_x + (num_img_x + 1) *  separetion_size
-max_size_y = num_img_y * img_scale_y + (num_img_y + 1) *  separetion_size
-
-print(max_size_x)
-
-# основная диаграмма
-ax.set_xlim(0, max_size_x)
-ax.set_ylim(0, max_size_y)
-
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_title("Этап 3. ")
-
-data_point_array = []
-
-for j in range(3):
-    for i in range(3):
-        # Open the image from my computer
-
-        # image = open_image_local(path + data[j * num_img_x + i]["path"])
-
-        # image_path = path + "image_" +data[j * num_img_x + i] + ".jpg"
-
-        image_path = f"{path}image_{data[j * num_img_x + i]}.jpg"
-        # print(image_path)
-        xml_path = f"{path}image_{data[j * num_img_x + i]}.xml"
-        print(xml_path)
-
-        image = open_image_local(image_path)
-
-        true_boxes, true_classes = load_xml_data(xml_path)
-        # print(true_boxes, true_classes)
-
-        # Define the position and size parameters
-        x0 = separetion_size + (img_scale_x + separetion_size) * i
-        x1 = separetion_size + img_scale_x + (img_scale_x + separetion_size) * i
-        y0 = separetion_size + (img_scale_y + separetion_size) * j
-        y1 = separetion_size + + img_scale_y + (img_scale_y + separetion_size) * j
-
-        for obj in range(len(true_classes)):
-            obj_class = true_classes[obj]
-            obj_box = true_boxes[obj]
-            obj_x =                 (obj_box[0] + (obj_box[2] - obj_box[0])/2) / img_size[0] * img_scale_x
-            obj_y =  (img_size[1] - (obj_box[1] + (obj_box[3] - obj_box[1])/2)) / img_size[1] * img_scale_y
-            
-            # print(obj_x, obj_y)
-
-            x_ = x0 + obj_x
-            y_ = y0 + obj_y
-
-            data_point_array.append({"class": obj_class, "coord": [x_, y_]})
-
-            if(obj_class == "crop"):
-                plt.plot(x_, y_, marker='o', color='#00FF00')
-            if(obj_class == "weed"):
-                plt.plot(x_, y_, marker='o', color='#FF0000')
-
-        # Define the position for the image axes
+        # Show image
         ax.imshow(image, extent=[x0, x1, y0, y1], aspect='auto')
 
-# Display the plot
-plt.savefig("3_etap.png", dpi=300)
-plt.show()
+        # Draw center points
+        for (xmin, ymin, xmax, ymax), label in zip(boxes, labels):
+            center_x = (xmin + xmax) / 2 / img_width * scale_x + x0
+            center_y = (img_height - (ymin + ymax) / 2) / img_height * scale_y + y0
+            color = "#00FF00" if label == "crop" else "#FF0000"
+            ax.plot(center_x, center_y, marker='o', color=color)
+
+plt.tight_layout()
+plt.savefig(f"{save_path}3_etap.png", dpi=300)
+# plt.show()
