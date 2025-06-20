@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import xml.etree.ElementTree as ET
 
 def open_image(path):
@@ -31,6 +32,7 @@ save_path = "2_FIGURE/"
 image_ids = [14, 392, 847, 1052, 2957, 4147, 4195, 4219, 4170]
 
 # Grid layout
+grid_step = 0.2
 num_x, num_y = 3, 3
 img_width, img_height = 1137.0, 640.0
 scale_x = 1.0
@@ -74,6 +76,38 @@ for j in range(num_y):
             color = "#00FF00" if label == "crop" else "#FF0000"
             ax.plot(center_x, center_y, marker='o', color=color)
 
+
+num_cols = int(canvas_width / grid_step)
+num_rows = int(canvas_height / grid_step)
+
+
+width, height = grid_step, grid_step
+# rect = patches.Rectangle(
+#     (x0, y0),        
+#     width, height,   
+#     linewidth=1,     
+#     edgecolor='black', 
+#     facecolor='blue',  
+#     alpha=0.3          
+# )
+
+for j in range(num_rows):
+    for i in range(num_cols):
+        x0 = grid_step * i
+        y0 = grid_step * j
+
+        rect = patches.Rectangle(
+            (x0, y0),        
+            width, height,   
+            linewidth=1,     
+            edgecolor='black', 
+            facecolor='blue',  
+            alpha=0.3          
+        )
+
+        ax.add_patch(rect)
+
+
 plt.tight_layout()
 plt.savefig(f"{save_path}3_etap.png", dpi=300)
-# plt.show()
+plt.show()
