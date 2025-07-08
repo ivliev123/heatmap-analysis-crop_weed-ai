@@ -144,7 +144,7 @@ for i in range(len(Model_Name_Dict)):
     model_name = Model_Name_Dict[reserch_num]
     print(model_name)
     x = other_data[model_name][x_metric] * 1000  # Переводим секунды в миллисекунды
-    y = other_data[model_name][y_metric]
+    y = other_data[model_name][y_metric] / 1000000
     plt.scatter(x, y, color=colors[i % len(colors)], marker=markers[i % len(markers)], s=150, label=model_name)
 
 plt.grid(True, linestyle='--', alpha=0.5)

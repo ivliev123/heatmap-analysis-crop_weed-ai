@@ -108,7 +108,8 @@ Model_Name_Dict = {
 
 detection_data_path = "detection_data.json"
 # путь к папке с изображениями и файлам разметки
-image_path_ = "main_research_data/training_demo/images/images_resized/"
+# image_path_ = "main_research_data/training_demo/images/images_resized/"
+image_path_ = "../../crop_weed_research_data/images/test/"
 
 path_to_save_figure = "3_FIGURE/"
 
@@ -142,8 +143,8 @@ def make_seg_map_reserch(reserch__num):
     ax.set_xlim(0, max_size_x)
     ax.set_ylim(0, max_size_y)
 
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
+    ax.set_xlabel('X, m')
+    ax.set_ylabel('Y, m')
     ax.set_title("")
     # ax.set_aspect('equal')
     ax.set_aspect(1)
@@ -240,8 +241,8 @@ def make_seg_map_reserch(reserch__num):
 
     ax_crop.set_xlim(0, max_size_x)
     ax_crop.set_ylim(0, max_size_y)
-    ax_crop.set_xlabel("X")
-    ax_crop.set_ylabel("Y")
+    ax_crop.set_xlabel("X, m")
+    ax_crop.set_ylabel("Y, m")
     ax_crop.set_aspect('equal')
 
     plt.tight_layout()
@@ -260,8 +261,8 @@ def make_seg_map_reserch(reserch__num):
 
     ax_weed.set_xlim(0, max_size_x)
     ax_weed.set_ylim(0, max_size_y)
-    ax_weed.set_xlabel("X")
-    ax_weed.set_ylabel("Y")
+    ax_weed.set_xlabel("X, m")
+    ax_weed.set_ylabel("Y, m")
     ax_weed.set_aspect('equal')
 
     plt.tight_layout()
